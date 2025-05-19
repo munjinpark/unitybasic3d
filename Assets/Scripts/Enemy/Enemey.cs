@@ -6,6 +6,7 @@ public class Enemey : MonoBehaviour
 {
     public Transform[] movePos;
     public float moveSpeed = 3f;
+    public float rotationSpeed = 5f;
     public float reachDistance = 0.2f;
 
     private Transform currMovePos;
@@ -22,6 +23,14 @@ public class Enemey : MonoBehaviour
     void Update()
     {
         if (currMovePos == null) return;
+
+        // 목표 방향으로 부드럽게 회전
+        Vector3 direction = (currMovePos.position - transform.position).normalized;
+        if (direction != Vector3.zero)
+        {
+            Quaternion lookRotation = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, rotationSpeed * Time.deltaTime);
+        }
 
         // 현재 위치에서 목표 위치로 이동
         transform.position = Vector3.MoveTowards(transform.position, currMovePos.position, moveSpeed * Time.deltaTime);
@@ -44,6 +53,6 @@ public class Enemey : MonoBehaviour
         } while (newPos == currMovePos && movePos.Length > 1); // 같은 위치 반복 방지
 
         currMovePos = newPos;
-        transform.LookAt(currMovePos);
+        //transform.LookAt(currMovePos);
     }
 }
