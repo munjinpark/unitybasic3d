@@ -8,12 +8,15 @@ public class Enemey : MonoBehaviour
     public float moveSpeed = 3f;
     public float rotationSpeed = 5f;
     public float reachDistance = 0.2f;
-    // 추가코드
     public float waitTime = 3f;
 
-    private Transform currMovePos;
     // 추가코드
+    public Animator animator;
+
+    private Transform currMovePos;
     private bool isWaiting = false;
+
+        
 
     void Start()
     {
@@ -26,11 +29,14 @@ public class Enemey : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // 추가코드
-        if (currMovePos == null || isWaiting) return;
+        if (currMovePos == null || isWaiting)
+        {
+            animator.SetFloat("Speed", 0.0f);
+            return;
+        }
 
-        // 목표 방향으로 부드럽게 회전
-        Vector3 direction = (currMovePos.position - transform.position).normalized;
+            // 목표 방향으로 부드럽게 회전
+            Vector3 direction = (currMovePos.position - transform.position).normalized;
         if (direction != Vector3.zero)
         {
             Quaternion lookRotation = Quaternion.LookRotation(direction);
@@ -39,19 +45,16 @@ public class Enemey : MonoBehaviour
 
         // 현재 위치에서 목표 위치로 이동
         transform.position = Vector3.MoveTowards(transform.position, currMovePos.position, moveSpeed * Time.deltaTime);
+        animator.SetFloat("Speed", moveSpeed);
 
         // 목표 위치에 거의 도착하면 새로운 목적지 선택
         if (Vector3.Distance(transform.position, currMovePos.position) < reachDistance)
         {
-            //SetNewDestination();
-
-            // 추가코드
             isWaiting = true;
             Invoke("WaitAndMove", waitTime);
         }
     }
 
-    // 추가코드
     void  WaitAndMove()
     {
         SetNewDestination();
