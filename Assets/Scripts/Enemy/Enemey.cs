@@ -8,8 +8,12 @@ public class Enemey : MonoBehaviour
     public float moveSpeed = 3f;
     public float rotationSpeed = 5f;
     public float reachDistance = 0.2f;
+    // 추가코드
+    public float waitTime = 3f;
 
     private Transform currMovePos;
+    // 추가코드
+    private bool isWaiting = false;
 
     void Start()
     {
@@ -22,7 +26,8 @@ public class Enemey : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (currMovePos == null) return;
+        // 추가코드
+        if (currMovePos == null || isWaiting) return;
 
         // 목표 방향으로 부드럽게 회전
         Vector3 direction = (currMovePos.position - transform.position).normalized;
@@ -38,8 +43,19 @@ public class Enemey : MonoBehaviour
         // 목표 위치에 거의 도착하면 새로운 목적지 선택
         if (Vector3.Distance(transform.position, currMovePos.position) < reachDistance)
         {
-            SetNewDestination();
+            //SetNewDestination();
+
+            // 추가코드
+            isWaiting = true;
+            Invoke("WaitAndMove", waitTime);
         }
+    }
+
+    // 추가코드
+    void  WaitAndMove()
+    {
+        SetNewDestination();
+        isWaiting = false;
     }
 
     void SetNewDestination()
