@@ -123,6 +123,37 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &93601370
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 93601371}
+  m_Layer: 0
+  m_Name: bulletPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 4162164826716764455, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &93601371
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 93601370}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.531, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 984961134}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &135953769
 GameObject:
   m_ObjectHideFlags: 0
@@ -629,7 +660,7 @@ Animator:
   m_GameObject: {fileID: 670584774}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 8af98d22813b4f748b74ae2308654e96, type: 2}
+  m_Controller: {fileID: 9100000, guid: ed42f10995a6afd4cab6f7920fb45226, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1235,11 +1266,12 @@ Transform:
   m_GameObject: {fileID: 984961133}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.23199998, y: 0.85, z: -0.007}
+  m_LocalPosition: {x: 0.232, y: 0.85, z: -0.007}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1374782028}
+  - {fileID: 93601371}
   m_Father: {fileID: 1440470706}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1068192958
@@ -1611,6 +1643,9 @@ MonoBehaviour:
   moveSpeed: 5
   rotateSpeed: 150
   jumpPower: 5
+  bulletMovePower: 10
+  bulletPos: {fileID: 93601371}
+  bullet: {fileID: 5320494802767385987, guid: e3ea383293f74bb419e12ce3f35c503e, type: 3}
 --- !u!95 &1440470710
 Animator:
   serializedVersion: 5
@@ -3050,7 +3085,7 @@ Animator:
   m_GameObject: {fileID: 1993504213114386867}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 8af98d22813b4f748b74ae2308654e96, type: 2}
+  m_Controller: {fileID: 9100000, guid: ed42f10995a6afd4cab6f7920fb45226, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
