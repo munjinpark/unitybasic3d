@@ -21,6 +21,11 @@ public class PlayerController : MonoBehaviour
     // ───── 애니메이션 ─────
     private Animator animator;
 
+
+    // ───── 사다리 ─────
+    private bool isLadder = false;
+
+
     // ──────────────────────
     void Start()
     {
@@ -46,12 +51,23 @@ public class PlayerController : MonoBehaviour
             // 회전
             transform.Rotate(0f, h * rotateSpeed * Time.deltaTime, 0f);
 
-            // 전진·후진
-            Vector3 move = transform.forward * v * moveSpeed * Time.deltaTime;
-            rb.MovePosition(rb.position + move);
 
-            // 애니메이션 Speed 갱신 (앞·뒤 이동만 반영)
-            animator.SetFloat("Speed", Mathf.Abs(v));
+            // 전진·후진
+            if (isLadder == false)
+            {
+                rb.useGravity = true;
+                Vector3 move = transform.forward * v * moveSpeed * Time.deltaTime;
+                rb.MovePosition(rb.position + move);
+            }
+            else
+            {
+                rb.useGravity = false;
+                 Vector3 move = transform.up * v * moveSpeed * Time.deltaTime;
+                rb.MovePosition(rb.position + move);
+            }
+
+                // 애니메이션 Speed 갱신 (앞·뒤 이동만 반영)
+                animator.SetFloat("Speed", Mathf.Abs(v));
         }
 
         // ───────── 공격 입력 ─────────
@@ -59,11 +75,6 @@ public class PlayerController : MonoBehaviour
         {
             if(animator.GetBool("IsAttack") == false )
                 animator.SetBool("IsAttack", true);   // Bool ON
-        }
-        else if (Input.GetMouseButton(0) == false)
-        {
-            if (animator.GetBool("IsAttack") == true)
-                animator.SetBool("IsAttack", false);
         }
 
         if( Input.GetMouseButtonDown(1))
@@ -81,6 +92,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void BulletFire()
+    {
+        GameObject go = Instantiate(bullet, bulletPos.position, transform.rotation);
+        go.GetComponent<Rigidbody>().AddForce(transform.forward * bulletMovePower, ForceMode.VelocityChange);
+    }
+
     // ───── 충돌 처리 ─────
     private void OnCollisionEnter(Collision collision)
     {
@@ -96,5 +113,18 @@ public class PlayerController : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         Debug.Log($"Trigger : {other.gameObject.name}");
+
+        if( other.gameObject.CompareTag("Ladder"))
+        {
+            isLadder = true;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("Ladder"))
+        {
+            isLadder = false;
+        }
     }
 }
