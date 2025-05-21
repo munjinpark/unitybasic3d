@@ -51,7 +51,7 @@ public class PlayerController : MonoBehaviour
             // 회전
             transform.Rotate(0f, h * rotateSpeed * Time.deltaTime, 0f);
 
-
+            
             // 전진·후진
             if (isLadder == false)
             {
@@ -76,10 +76,14 @@ public class PlayerController : MonoBehaviour
             if(animator.GetBool("IsAttack") == false )
                 animator.SetBool("IsAttack", true);   // Bool ON
         }
+        else {
+            if (animator.GetBool("IsAttack") == true)
+                animator.SetBool("IsAttack", false);   // Bool ON
+        }
 
-        if( Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButtonDown(1))
         {
-            GameObject go =  Instantiate(bullet, bulletPos.position, transform.rotation);
+            GameObject go = Instantiate(bullet, bulletPos.position, transform.rotation);
             go.GetComponent<Rigidbody>().AddForce(transform.forward * bulletMovePower);
         }
 
