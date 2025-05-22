@@ -1,5 +1,8 @@
 ﻿using System.Collections;
+using System.Linq.Expressions;
 using UnityEngine;
+
+
 
 public class Enemy : MonoBehaviour
 {
@@ -13,7 +16,7 @@ public class Enemy : MonoBehaviour
     public float reachDistance = 0.2f;
     public float waitTime = 3f;
 
-    [Header("Combat")]
+    [Header("Detect")]
     public Transform player;
     public float detectionRange = 5f;
     public float forgetRange = 7f;
@@ -24,7 +27,7 @@ public class Enemy : MonoBehaviour
 
     /* ───── 내부 필드 ───── */
     State state = State.Patrol;
-    Transform currMovePos;
+    Transform tagetMovePos;
     bool isWaiting;
 
     /* ───── 초기화 ───── */
@@ -54,16 +57,16 @@ public class Enemy : MonoBehaviour
 
     void Patrol()
     {
-        if (isWaiting || currMovePos == null)
+        if (isWaiting || tagetMovePos == null)
         {
             animator.SetFloat("Speed", 0f);
             return;
         }
 
         animator.SetFloat("Speed", moveSpeed);
-        MoveTowards(currMovePos.position);
+        MoveTowards(tagetMovePos.position);
 
-        if (Vector3.Distance(transform.position, currMovePos.position) < reachDistance)
+        if (Vector3.Distance(transform.position, tagetMovePos.position) < reachDistance)
             StartCoroutine(WaitAndResume());
 
         if (InRange(detectionRange)) ChangeState(State.Detect);
@@ -110,7 +113,12 @@ public class Enemy : MonoBehaviour
         Vector3 dir = (target - transform.position).normalized;
         if (dir != Vector3.zero)
         {
-            Quaternion lookRot = Quaternion.LookRotation(dir);
+            Quaternion lookRot = Quaternion.LookRotation(dir, Vector3.up);
+
+            Debug.Log($"Current rotation: {transform.rotation.eulerAngles}");
+            Debug.Log($"Target rotation: {lookRot.eulerAngles}");
+            Debug.Log($"Rotation speed: {rotationSpeed}");
+
             transform.rotation =
                 Quaternion.Slerp(transform.rotation, lookRot, rotationSpeed * Time.deltaTime);
         }
@@ -126,14 +134,53 @@ public class Enemy : MonoBehaviour
         do
         {
             next = movePos[Random.Range(0, movePos.Length)];
-        } while (next == currMovePos && movePos.Length > 1);
+        } while (next == tagetMovePos && movePos.Length > 1);
 
-        currMovePos = next;
+
+        tagetMovePos = next;
     }
 
     void ChangeState(State next)
     {
         if (state == next) return;          // 중복 전환 방지
         state = next;                       // 상태 갱신
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject.CompareTag("Bullet"))
+        {
+            Destroy(other. gameObject);
+            Die();
+            Destroy(transform.parent.gameObject, 2f);
+        }
+    }
+
+
+    void Die()
+    {
+        // 모든 자식 오브젝트를 가져옴
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            Transform child = transform.GetChild(i);
+            Debug.Log(child.gameObject.name);
+
+            // Rigidbody 추가
+            Rigidbody rb = child.gameObject.AddComponent<Rigidbody>();
+
+            // 랜덤한 방향으로 힘 적용
+            Vector3 randomDirection = new Vector3(
+                Random.Range(-1f, 1f),
+                Random.Range(0.5f, 1f),
+                Random.Range(-1f, 1f)
+            ).normalized;
+
+            float explosionForce = Random.Range(50f, 100f);
+            rb.AddForce(randomDirection * explosionForce);
+
+ 
+            rb.AddTorque(new Vector3(360, 360, 360));
+        }
+
     }
 }
