@@ -99,6 +99,7 @@ public class PlayerController : MonoBehaviour
     public void BulletFire()
     {
         GameObject go = Instantiate(bullet, bulletPos.position, transform.rotation);
+        Destroy(go, 3f);
         go.GetComponent<Rigidbody>().AddForce(transform.forward * bulletMovePower, ForceMode.VelocityChange);
     }
 

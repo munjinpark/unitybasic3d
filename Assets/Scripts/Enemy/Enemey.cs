@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Linq.Expressions;
 using UnityEngine;
 
 
@@ -67,7 +66,7 @@ public class Enemy : MonoBehaviour
         MoveTowards(tagetMovePos.position);
 
         if (Vector3.Distance(transform.position, tagetMovePos.position) < reachDistance)
-            StartCoroutine(WaitAndResume());
+            WaitAndResume();
 
         if (InRange(detectionRange)) ChangeState(State.Detect);
     }
@@ -86,19 +85,18 @@ public class Enemy : MonoBehaviour
         animator.SetBool("IsAttack", true);
 
         if (!InRange(attackRange))
-        {
+        {6
             animator.SetBool("IsAttack", false);
             ChangeState(State.Detect);
         }
     }
 
     /* ───── 보조 메서드 ───── */
-    IEnumerator WaitAndResume()
+    void WaitAndResume()
     {
         isWaiting = true;
-        yield return new WaitForSeconds(waitTime);
-        SetNewDestination();
-        isWaiting = false;
+
+        Invoke("SetNewDestination", waitTime);
     }
 
     bool InRange(float range)
@@ -113,11 +111,10 @@ public class Enemy : MonoBehaviour
         Vector3 dir = (target - transform.position).normalized;
         if (dir != Vector3.zero)
         {
+            dir.y = 0f;
             Quaternion lookRot = Quaternion.LookRotation(dir, Vector3.up);
 
-            Debug.Log($"Current rotation: {transform.rotation.eulerAngles}");
-            Debug.Log($"Target rotation: {lookRot.eulerAngles}");
-            Debug.Log($"Rotation speed: {rotationSpeed}");
+            //Debug.Log($"Current dir: {dir}");
 
             transform.rotation =
                 Quaternion.Slerp(transform.rotation, lookRot, rotationSpeed * Time.deltaTime);
@@ -136,7 +133,7 @@ public class Enemy : MonoBehaviour
             next = movePos[Random.Range(0, movePos.Length)];
         } while (next == tagetMovePos && movePos.Length > 1);
 
-
+        isWaiting = false;
         tagetMovePos = next;
     }
 
